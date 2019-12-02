@@ -14,22 +14,22 @@ A-Task 是一款面向个人的行程任务管理网站
 	请参加Maven的pom.xml
 	
 ## 参数配置
-	MySql数据库连接字符串
-	
-	Redis密码
+	MySql数据库连接字符串,Redis密码
+	ataskServer/src/main/resources/application.properties
 	
 	阿里云AK
+	ataskServer/src/main/java/com/atask/ataskServer/utills/SMSUtil.java
 	
 	JWT密钥
+	ataskServer/src/main/java/com/atask/ataskServer/utills/JwtUtil.java
 	
 ## 相关连接
-  使用说明
-
-  
   设计文档 
+  https://github.com/kitman0000/A-Task/blob/master/Doc/%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3.docx
  
   
   WEB API 
+  https://github.com/kitman0000/A-Task/blob/master/Doc/webApi%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3.xlsx
 
 	
 ## 项目作者
