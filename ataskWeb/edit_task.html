@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script src="js/vue.min.js"></script>
+		<script src="js/axios.min.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+		<link rel="stylesheet" href="css/MyCss.css" type="text/css" />
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.css" type="text/css"/>
+		<link id="cssLink" rel="stylesheet" href="css/theme_pink.css" type="text/css"/>
+		<link rel="stylesheet" href="css/bootstrap-datepicker.min.css" type="text/css" />
+		<script src="js/jquery-3.4.1.js"></script>
+		<script src="js/bootstrap.js"></script>
+		<script src="js/date.format.js"></script>
+		<script src="js/bootstrap-datepicker.js"></script>
+		<script src="js/bootstrap-datepicker.zh-CN.min.js"></script>
+		<script src="js/jquery.mobile-1.4.5.js"></script>
+		<script src="js/global.js"></script>
+		<title>编辑任务</title>
+	</head>
+	
+	<body>
+		<!--更改页面  需要读出他原本的文本内容并添加-->
+		<div class="container">
+			<div class="row clearfix">
+				<div id='app' class="col-md-12 column">
+					<div style="margin-top: 30px;">
+						<a onclick="goBack()" class="word"><-返回</a>
+						<a v-on:click='changeTask' style="float: right;" class="word">->确认</a>
+					</div>
+					<form role="form" style="margin-top: 45px;">
+						<div class="form-group">
+							 <label>任务名称</label>
+							 <input v-model="title" class="form-control" placeholder="您要更改的任务名称" value=""/>
+						</div>
+						<div class="form-group" style="margin-top: 50px;">
+							 <label>内容</label>
+							 <textarea v-model="content" class="form-control" placeholder="您要更改的内容" value=""></textarea>
+						</div>
+						<label style="margin-top: 30px;">选择日期</label>
+						<!--日期控价value格式  2000-08-29 -->
+						<div style="border-color: #ccc;" class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
+							<input v-model="date" type="text" id="date" />
+						</div>
+						<span style="color: red; font-size: 10px;">{{message}}</span>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		var vueForm = new Vue({
+			el:"#app",
+			data(){
+				return{
+					title:"",
+					content:"",
+					date:"",
+					message:""
+				}
+			},
+			methods:{
+				changeTask(){
+					if(!this.title){
+						this.message='标题不可为空';
+					}
+					else if(!this.status){
+						this.message='内容不可为空';
+					}
+					else if(!this.date){
+						this.message='日期不能为空';
+					}
+					else{
+						var params = new URLSearchParams();
+						var taskID = localStorage.getItem("taskID");
+						var token = localStorage.getItem("token");
+						params.append("token",token);
+						params.append("title",this.title);
+						params.append("content",this.content);
+						params.append("status",this.status);
+						params.append("date",this.date);
+						params.append("taskID",taskID);
+						axios
+							.post("/task/editTask",params)
+							.then(res=>{
+								var response=res.data;
+								if(response=="TASK_EDIT_FAILED"){
+									this.message='编辑任务失败';
+								}
+								else{
+									// window.location.href="task.html";
+									javascript:history.back(-1);
+								}
+							})
+					}
+				}
+			},
+			created(){
+				checkToken();
+				getTheme();
+			},
+			mounted(){
+				var taskID = localStorage.getItem("taskID");
+				var token = localStorage.getItem("token");
+				var params = new URLSearchParams();
+				params.append("token",token);
+				params.append("taskID",taskID);
+				axios
+					.post("/task/getUserTaskDetail",params)
+					.then(res=>{
+						var response=res.data;
+						this.title=response.title;
+						this.status=response.status;
+						this.content=response.content;
+						this.date=response.date;
+					})
+			}
+		})
+		
+		$(function () {
+			setVueForm(vueForm);
+			
+			$("#date").datepicker
+				({
+					autoclose: true,
+					todayHighlight: true,
+					/*汉化*/
+					language: "zh-CN",
+					/*日期格式*/
+					format: "yyyy-mm-dd"
+				});
+		});
+		
+		function goBack()
+		{
+			javascript:history.back(-1);
+		}
+	</script>
+</html>

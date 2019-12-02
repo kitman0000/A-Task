@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<script src="js/vue.min.js"></script>
+		<script src="js/axios.min.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="js/jquery-3.4.1.js"></script>
+		<script src="js/bootstrap.js"></script>
+		<script src="js/date.format.js"></script>
+		<script src="js/global.js"></script>
+		<script src="js/jquery.mobile-1.4.5.js"></script>
+		<script src="js/bootstrap-datepicker.js"></script>
+		<script src="js/bootstrap-datepicker.zh-CN.min.js"></script>
+		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+		<link rel="stylesheet" href="css/MyCss.css" type="text/css" />
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.css" type="text/css" />
+		<link id="cssLink" rel="stylesheet" href="css/theme_pink.css" type="text/css" />
+		<link rel="stylesheet" href="css/bootstrap-datepicker.min.css" type="text/css" />
+
+		<title>添加任务</title>
+	</head>
+
+	<body>
+		<div class="container">
+			<div class="row clearfix">
+				<div id='app' class="col-md-12 column">
+					<div style="margin-top: 30px;">
+						<a href="task.html" class="word">
+							<-返回</a> <a v-on:click='addTask' style="float: right;" class="word">->确认
+						</a>
+					</div>
+					<form role="form" style="margin-top: 45px;">
+						<div class="form-group">
+							<label class="word">任务名称</label>
+							<input v-model="title" class="form-control" placeholder="输入您的任务名称" />
+						</div>
+						<div class="form-group word" style="margin-top: 50px;">
+							<label>内容</label>
+							<textarea v-model="content" class="form-control" placeholder="输入您的任务内容"></textarea>
+						</div>
+						<label style="margin-top: 30px;" class="word">选择日期</label>
+						<div style="border-color: #ccc;" class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
+							<input v-model="date" type="text" id="date" />
+						</div>
+						<span style="color: red; font-size: 10px;">{{message}}</span>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+
+		var vueForm = new Vue({
+
+			el: "#app",
+			data() {
+				return {
+					title: "",
+					status: "",
+					date: "",
+					content: "",
+					message: ""
+				}
+			},
+			methods: {
+				addTask() {
+					var status = 'planning';
+					if (!this.title) {
+						this.message = '标题不可为空';
+					}
+					else if (!this.content) {
+						this.message = '内容不可为空';
+					}
+					else if (!this.date) {
+						alert(this.date);
+						this.message = '日期不能为空';
+					}
+					else {
+						var params = new URLSearchParams();
+						var token = localStorage.getItem("token");
+						params.append("token", token);
+						params.append("title", this.title);
+						params.append("content", this.content);
+						params.append("status", status);
+						params.append("date", this.date);
+						axios
+							.post("/task/addTask", params)
+							.then(res => {
+								var response = res.data;
+								if (response == "TASK_ADD_FAILED") {
+									this.message = '添加任务失败';
+								}
+								else {
+									window.location.href = "task.html";
+								}
+							})
+					}
+				}
+			},
+			created() {
+				checkToken();
+				getTheme();
+			}
+		})
+		
+		$(function () {
+			setVueForm(vueForm);
+			
+			$("#date").datepicker
+				({
+					autoclose: true,
+					todayHighlight: true,
+					/*汉化*/
+					language: "zh-CN",
+					/*日期格式*/
+					format: "yyyy-mm-dd"
+				});
+		});
+	</script>
+
+</html>

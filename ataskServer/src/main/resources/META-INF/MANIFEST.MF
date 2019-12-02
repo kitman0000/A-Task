@@ -1,0 +1,40 @@
+Manifest-Version: 1.0
+Class-Path: spring-boot-starter-2.1.8.RELEASE.jar spring-tx-5.1.9.RELE
+ ASE.jar jackson-annotations-2.9.0.jar spring-boot-starter-logging-2.1
+ .8.RELEASE.jar spring-boot-starter-json-2.1.8.RELEASE.jar javax.annot
+ ation-api-1.3.2.jar spring-context-support-5.1.9.RELEASE.jar aliyun-j
+ ava-sdk-core-4.0.3.jar jackson-datatype-jsr310-2.9.9.jar tomcat-embed
+ -websocket-9.0.24.jar thymeleaf-spring5-3.0.11.RELEASE.jar spring-oxm
+ -5.1.9.RELEASE.jar lettuce-core-5.1.8.RELEASE.jar netty-codec-4.1.39.
+ Final.jar spring-boot-starter-web-2.1.8.RELEASE.jar spring-context-5.
+ 1.9.RELEASE.jar attoparser-2.0.5.RELEASE.jar spring-boot-starter-jdbc
+ -2.1.8.RELEASE.jar netty-handler-4.1.39.Final.jar mybatis-spring-boot
+ -starter-2.0.0.jar spring-data-redis-2.1.10.RELEASE.jar aliyun-sdk-os
+ s-2.8.3.jar spring-jcl-5.1.9.RELEASE.jar logback-classic-1.2.3.jar ne
+ tty-transport-4.1.39.Final.jar log4j-to-slf4j-2.11.2.jar spring-aop-5
+ .0.7.RELEASE.jar reactive-streams-1.0.3.jar mybatis-spring-2.0.0.jar 
+ logback-core-1.2.3.jar jackson-core-2.9.8.jar snakeyaml-1.23.jar log4
+ j-api-2.11.2.jar tomcat-embed-core-9.0.24.jar spring-jdbc-5.1.9.RELEA
+ SE.jar spring-data-commons-2.1.10.RELEASE.jar jaxb-core-2.1.14.jar sp
+ ring-boot-starter-thymeleaf-2.1.8.RELEASE.jar HikariCP-3.2.0.jar thym
+ eleaf-spring4-3.0.10.RELEASE.jar jackson-datatype-jdk8-2.9.9.jar gson
+ -2.8.5.jar slf4j-api-1.7.28.jar aspectjweaver-1.8.0.jar spring-boot-2
+ .1.8.RELEASE.jar mybatis-spring-boot-autoconfigure-2.0.0.jar hibernat
+ e-validator-6.0.17.Final.jar spring-web-5.1.9.RELEASE.jar jackson-mod
+ ule-parameter-names-2.9.9.jar netty-common-4.1.39.Final.jar activatio
+ n-1.1.1.jar unbescape-1.1.6.RELEASE.jar reactor-core-3.2.12.RELEASE.j
+ ar spring-expression-5.1.9.RELEASE.jar validation-api-2.0.1.Final.jar
+  thymeleaf-3.0.11.RELEASE.jar jaxb-api-2.3.1.jar spring-data-keyvalue
+ -2.1.10.RELEASE.jar spring-boot-autoconfigure-2.1.8.RELEASE.jar sprin
+ g-webmvc-5.1.9.RELEASE.jar javax.activation-api-1.2.0.jar thymeleaf-e
+ xtras-java8time-3.0.4.RELEASE.jar jul-to-slf4j-1.7.28.jar classmate-1
+ .4.0.jar httpclient-4.5.9.jar commons-pool2-2.6.2.jar spring-beans-5.
+ 1.9.RELEASE.jar netty-buffer-4.1.39.Final.jar httpcore-4.4.12.jar spr
+ ing-boot-starter-tomcat-2.1.8.RELEASE.jar spring-core-5.1.9.RELEASE.j
+ ar spring-boot-starter-aop-2.1.8.RELEASE.jar jboss-logging-3.3.3.Fina
+ l.jar tomcat-embed-el-9.0.24.jar netty-resolver-4.1.39.Final.jar jack
+ son-databind-2.9.9.3.jar jaxb-impl-2.1.jar mysql-connector-java-8.0.1
+ 1.jar commons-codec-1.11.jar mybatis-3.5.0.jar jdom-1.1.jar spring-bo
+ ot-starter-data-redis-2.1.8.RELEASE.jar
+Main-Class: com.atask.ataskServer.AtaskServerApplication
+

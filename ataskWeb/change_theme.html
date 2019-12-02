@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<script src="js/vue.min.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="js/jquery-3.4.1.js"></script>
+	<script src="js/bootstrap.js"></script>
+	<script src="js/axios.min.js"></script>
+	<link rel="stylesheet" href="css/MyCss.css" type="text/css" />
+	<link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+	<link id="cssLink" rel="stylesheet" href="css/theme_pink.css" type="text/css" />
+	<script src="js/global.js"></script>
+	<title>更改主题</title>
+</head>
+
+<body>
+	<div id='app' class="container">
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<div style="margin-top: 30px;">
+					<a @click="confirm()" href="setting.html" class="word"><-返回 </a> 
+					<a @click="confirm()" style="float: right;" class="word">
+						->确认
+					</a>
+				</div>
+				<!--颜色选择-->
+				<div class="ChooseColor_area">
+					<div @click="changeCss('theme_skyblue.css')" class="col-xs-4 column" style="padding-left: 0px;">
+						<div class="color_area" style="background-color: skyblue;text-align: center;padding-top: 25px;">
+							<div :class="{selected_theme:ind=='theme_skyblue.css'}"></div>
+						</div>
+						<span style="color: skyblue;">天蓝色</span>
+					</div>
+					<div @click="changeCss('theme_pink.css')" class="col-xs-4 column" style="padding-left: 0px;">
+						<div class="color_area" style="background-color: pink;text-align: center;padding-top: 25px;">
+							<div :class="{selected_theme:ind=='theme_pink.css'}"></div>
+						</div>
+						<span style="color: pink;">少女粉</span>
+					</div>
+					<div @click="changeCss('theme_purple.css')" class="col-xs-4 column" style="padding-left: 0px;">
+						<div class="color_area" style="background-color: purple;text-align: center;padding-top: 25px;">
+							<div :class="{selected_theme:ind=='theme_purple.css'}"></div>
+						</div>
+						<span style="color: purple;">基佬紫</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+	new Vue({
+		el:'#app',
+		data(){
+			return{
+				ind:""
+			}
+		},
+			
+		created(){
+			checkToken();
+			getTheme();
+			this.ind=getTheme();
+		},
+		methods:{
+			changeCss(themeName){
+				this.ind=themeName;
+				var token = localStorage.getItem("token");
+				var params = new URLSearchParams();
+				params.append("token",token);
+				params.append("themeName",themeName);
+				axios
+					.post("/user/setTheme",params)
+					.then(res=>{
+						var response=res.data;
+						if(response=="THEME_SET_FAILED"){
+							alert('修改失败');
+						}
+						else{
+							$("#cssLink").attr("href","css/"+themeName);
+						}
+					})
+			},
+			confirm(){
+				parent.window.refresh();
+			}
+		}
+	})
+</script>
+
+</html>

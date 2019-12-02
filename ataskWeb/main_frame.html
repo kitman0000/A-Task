@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<script src="js/vue.min.js"></script>
+		<script src="js/axios.min.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="js/jquery-3.4.1.js"></script>
+		<script src="js/bootstrap.js"></script>
+		<link rel="stylesheet" href="css/MyCss.css" type="text/css"/>
+		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+		<link id="cssLink" rel="stylesheet" href="css/theme_pink.css" type="text/css"/>
+		<script src="js/global.js"></script>
+		<title>A-Task</title>
+	</head>
+	<body>
+		<div id='app'>
+			<div style="width: 100%;height: 44px;box-shadow: rgb(136, 136, 136) 0px 5px 1px;margin-bottom: 1px;" class="titleBar">
+				<span style="font-size: 30px;line-height: 50px;vertical-align:middle;padding-left: 10px;">{{title}}</span>
+			</div>
+			
+			<!--底部导航栏部分-->
+			<div class="row clearfix">
+				<div class="col-md-12 column">
+					<ul id="bottomNavBar" class="nav nav-tabs navbar-fixed-bottom" style="width: 103%; ">
+						<li v-bind:class="{NavActive:t}" @click="task" class="MyNav" >
+							 <a style="color: #000000;font-size: 13px;"><span class="glyphicon glyphicon-list-alt"></span></br>任务</a>
+						</li>
+						<li v-bind:class="{NavActive:c}" @click="calendar" class="MyNav">
+							 <a style="color: #000000;font-size: 13px;"><span class="glyphicon glyphicon glyphicon-calendar"></span></br>日历</a>
+						</li>
+						<li v-bind:class="{NavActive:s}" @click="setting" class="MyNav">
+							 <a style="color: #000000;font-size: 13px;"><span class="glyphicon glyphicon-cog"></span></br>设置</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<!--iframe框架-->
+			<iframe scrolling="auto" name="iframeTest" width="100%" onload="this.height =document.documentElement.clientHeight - 50;" scrolling="yes" frameborder="0" :src="src1" ></iframe>
+		</div>
+	</body>
+	<script>
+		
+		
+		new Vue({
+			el:"#app",
+			data(){
+				return{
+					title:"A-Task:任务",
+					src1:"task.html",
+					t:true,
+					c:false,
+					s:false
+				}
+			},
+			created(){
+				this.src1="task.html";
+				checkToken();
+				getTheme();
+			},
+			methods:{
+				task(){
+					this.title = "A-Task:任务";
+					this.t=true;
+					this.c=false;
+					this.s=false;
+					this.src1="task.html";
+				},
+				calendar(){
+					this.title = "A-Task:日历";
+					this.t=false;
+					this.c=true;
+					this.s=false;
+					this.src1="calendar.html";
+				},
+				setting(){
+					this.title = "A-Task:设置";
+					this.t=false;
+					this.c=false;
+					this.s=true;
+					this.src1="setting.html";
+				}
+			}
+		})
+		
+		function refresh()
+		{
+			window.location.reload();
+		}
+		
+		function logout()
+		{
+			window.location.href = "login.html";
+		}
+		
+		// 返回导航栏高度
+		function getNavBarHeight()
+		{
+			return $("#bottomNavBar").height();
+		}
+	</script>
+</html>

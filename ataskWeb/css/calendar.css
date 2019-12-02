@@ -1,0 +1,110 @@
+* {
+	padding: 0%;
+	margin: 0%;
+}
+
+html,
+body {
+	background: #f2f2f2;
+}
+
+.calendar {
+	margin: 15px;
+	width: 90%;
+	height: 80%;
+	background: white;
+	box-shadow: 0px 1px 1px rgba(0, 0, 0, .1);
+	text-align: center;
+}
+
+.title {
+	height: 70px;
+	border-bottom: 1px solid rgba(0, 0, 0, .1);
+	position: relative;
+	text-align: center;
+}
+
+#calendar-title {
+	font-size: 15px;
+	text-transform: uppercase;
+	font-family: Arial, Helvetica, sans-serif;
+	padding: 0px 0 0 0;
+	margin-top: 8px;
+}
+
+#calendar-year {
+	font-size: 15px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	margin-top: 15px;
+}
+
+#pre {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 60px;
+	height: 70px;
+
+}
+
+#next {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 60px;
+	height: 70px;
+}
+
+.body-list ul {
+	font-size: 14px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	width: 100%;
+	box-sizing: border-box;
+
+}
+
+.body-list ul li {
+	list-style: none;
+
+	display: inline-block;
+	width: 13.3%;
+
+
+	/*100/7 = 14.28%*/
+	display: block;
+	width: 14.28%;
+	float: left;
+
+	/*规定行高，垂直居中*/
+	height: 36px;
+	line-height: 36px;
+	box-sizing: border-box;
+	text-align: center;
+
+}
+
+li {
+	color: #6ac13c;
+}
+
+.green {
+	color: #6ac13c;
+}
+
+.lightgrey {
+	/*浅灰色显示过去的日期*/
+	color: #a8a8a8;
+}
+
+.darkgrey {
+	/*深灰色显示将来的日期*/
+	color: #565656;
+}
+
+/*日期当天用绿色背景绿色文字加以显示*/
+.greenbox {
+	border: 1px solid #6ac13c;
+	background: #e9f8df;
+}

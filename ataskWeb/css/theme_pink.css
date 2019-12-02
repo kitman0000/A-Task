@@ -1,0 +1,47 @@
+.btn_word {
+	background-color: pink;
+	color: darkslategray;
+}
+.word {
+	color: rosybrown;
+}
+li {
+	color: #000;
+}
+.weekdays {
+	margin: 0;
+	color: #FFFFFF;
+	background: #fff;
+	width: 96.6%;
+	margin-top: 26px;
+	height: 34px;
+	line-height: 34px;
+	margin-left: 2.2%;
+	border: 1px solid #000;
+	border-radius: 5px;
+}
+
+/* 日历选中日期 */
+.active2{
+	background: #FF9999;
+	color: #fff !important;
+	border: #FF9999 solid 2px;
+	border-radius: 10px;
+}
+
+.MyNav
+{
+	background: #FF9999 !important;
+	color: #000;
+}
+
+.NavActive
+{
+	background: #fde1e6  !important;
+	color: #fff;
+}
+
+.titleBar
+{
+	background: #F99;
+}

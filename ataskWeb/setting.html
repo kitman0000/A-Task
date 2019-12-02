@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="js/vue.min.js"></script>
+		<script src="js/jquery-3.4.1.js"></script>
+		<script src="js/bootstrap.js"></script>
+		<link rel="stylesheet" href="css/MyCss.css" type="text/css"/>
+		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+		<link id="cssLink" rel="stylesheet" href="css/theme_pink.css" type="text/css"/>
+		<script src="js/global.js"></script>
+		<title>设置界面</title>
+	</head>
+	<body>
+		<div id="app" class="container">
+			<div class="row clearfix">
+				<div class="col-md-12 column">
+					<ul class="list-unstyled">
+						</br>
+						<li @click="changePwd" class="glyphicon glyphicon-edit ">
+							修改密码
+						</li>
+						</br>
+						</br>
+						<li @click="changeStyle" class="glyphicon glyphicon-star ">
+							界面风格
+						</li>
+						</br>
+						</br>
+						<hr style="margin-top: 5px;"/>
+						<li class="glyphicon glyphicon-book ">
+							关于本站
+						</li>
+						</br>
+						</br>
+						<li @click="rule" class="glyphicon glyphicon-tags ">
+							用户协议
+						</li>
+						</br>
+						</br>
+						<hr style="margin-top: 5px;"/>
+						<li @click="logOut" class="glyphicon glyphicon-log-out">
+							退出账号
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		new Vue({
+			el:"#app",
+			created() {
+				checkToken();
+				getTheme();
+			},
+			methods:{
+				changePwd(){
+					window.location.href="change_password.html";
+				},
+				changeStyle(){
+					window.location.href="change_theme.html";
+				},
+				logOut(){
+					localStorage.setItem("token", null);
+					parent.window.logout();
+				},
+				rule(){
+					window.location.href="rules.html";
+				}
+			}
+		})
+	</script>
+</html>

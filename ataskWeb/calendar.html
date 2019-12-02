@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script src="js/vue.min.js"></script>
+		<script src="js/axios.min.js"></script>
+		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+		<script src="js/jquery-3.4.1.js"></script>
+		<script src="js/bootstrap.js"></script>
+		<link id="cssLink" rel="stylesheet" href="css/theme_pink.css" type="text/css" />
+		<link rel="stylesheet" href="css/MyCss.css" type="text/css" />
+		<script src="js/global.js"></script>
+		<title></title>
+	</head>
+	<body>
+		  <script type="text/x-template" id="calendar">
+		        <div id="" style="border-bottom: 1px solid #ccc;padding-bottom: 5px;">
+		            <!-- 年份 月份 -->
+		            <div class="month">
+		                <ul>
+		                    <!--点击会触发pickpre函数，重新刷新当前日期 @click(vue v-on:click缩写) -->
+		                    <li class="arrow" @click="pickPre(currentYear,currentMonth)">❮</li>
+		                    <li class="year-month" @click="pickYear(currentYear,currentMonth)">
+		                        <span class="choose-year">{{ currentYear }}</span>
+		                        <span class="choose-month">{{ currentMonth }}月</span>
+		                    </li>
+		                    <li class="arrow" @click="pickNext(currentYear,currentMonth)">❯</li>
+		                </ul>
+		            </div>
+		            <!-- 星期 -->
+		            <ul class="weekdays" style="margin-bottom: 5px;">
+		                <li>一</li>
+		                <li>二</li>
+		                <li>三</li>
+		                <li>四</li>
+		                <li>五</li>
+		                <li style="color: #0981ff;">六</li>
+						<li style="color: #0981ff;">日</li>
+					</ul>
+		            <!-- 日期 -->
+					<ul class="days">
+						<!-- 核心 v-for循环 每一次循环用<li>标签创建一天 -->
+						<li @click="getDa($event,dayobject)" v-for="dayobject in days" v-bind:class="{active1:ind != dayobject, 'active2':ind == dayobject}">
+							<!--本月-->
+							<!--如果不是本月  改变类名加灰色-->
+		
+		                    <span v-if="dayobject.day.getMonth()+1 != currentMonth"  style="display:none;">{{ dayobject.day.getDate() }}</span>
+		
+		                    <!--如果是本月  还需要判断是不是这一天-->
+		                    <span v-else>
+		                        <!--今天  同年同月同日-->
+		                        <span v-if="dayobject.day.getFullYear() == new Date().getFullYear() && dayobject.day.getMonth() == new Date().getMonth() && dayobject.day.getDate() == new Date().getDate()"
+		                            class="active">{{ dayobject.day.getDate() }}</span>
+								<span v-else>{{ dayobject.day.getDate() }}</span>
+		                    </span>
+		
+		                </li>
+		            </ul>
+		        </div>
+		    </script>
+		    <div id="app">
+		        <calendar id="calendar"></calendar>
+				<div :style="taskStyle">
+					<div style="margin-top: 10px;box-shadow: 0px 5px 2px #888888;padding: 10px 10px 0.5px 10px;" class="btn_word" v-for="task in tasks">
+						<h3 class="text-left" style="display: inline;">
+							{{task.title}}
+						</h3>
+						<span @click="deleteTask(task.taskID)" class="glyphicon glyphicon-trash glyphicon-trash_btn word"></span>
+						<span @click="reachRedact(task.taskID)"  class="glyphicon glyphicon-pencil glyphicon-pencil_btn word"></span>
+						<br />
+						<p class="lead text-success btn_word">
+							{{task.content}}
+							<div class="btn-group" style="border: 1px solid rgb(106,106,106);border-radius: 3px;">
+								<button data-toggle="dropdown" class="btn btn-default btn-sm states btn_word" style="min-width: 70px;">{{task.status}}</button>
+								<button data-toggle="dropdown"  class="btn btn-default btn-sm dropdown-toggle states btn_word">
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu states ">
+									<li @click="changeStatus('planning',task.taskID)" style="margin-left: 5px;">
+										计划中
+									</li>
+									<li @click="changeStatus('todo',task.taskID)" style="margin-left: 5px;">
+										即将开始
+									</li>
+									<li @click="changeStatus('doing',task.taskID)" style="margin-left: 5px;">
+										执行中
+									</li>
+									<li @click="changeStatus('finish',task.taskID)" style="margin-left: 5px;">
+										已完成
+									</li>
+									<li @click="changeStatus('cancel',task.taskID)" style="margin-left: 5px;">
+										已取消
+									</li>
+								</ul>
+							</div>
+							<span class="taskpage_date">{{task.date}}</span>
+						</p>
+					</div>
+				</div>
+		    </div>
+	</body>
+	<script>
+		function parseGetUserTask(response){
+			var tasksObj = eval(response);
+			
+			var trans = {
+				"planning":"计划中",
+				"todo":"即将开始",
+				"doing":"执行中",
+				"finish":"已完成",
+				"cancel":"已取消"
+			}
+			
+			$.each(tasksObj,function(index,item){
+				item.status = trans[item.status];
+			});
+			vm.tasks = tasksObj;
+		}
+		 Vue.component("calendar", {
+		            template: "#calendar",
+		            data: function () {
+		                return {
+		                    currentDay: 1,
+		                    currentMonth: 1,
+		                    currentYear: 1970,
+		                    currentWeek: 1,
+		                    days: [],
+							ind:""
+		                }
+		            },
+		            created() {
+		                let that = this;
+		                that.initData(null);
+						checkToken();
+						getTheme();
+
+
+		            },
+					mounted(){
+
+						
+						var myDate = new Date();
+						var year = myDate.getFullYear();
+						var month = myDate.getMonth()+1;
+						var day = myDate.getDate();
+						var date = year+"/"+month+"/"+day;
+						var params = new URLSearchParams();
+						var token = localStorage.getItem("token");
+						params.append("token",token);
+						params.append("date",date);
+						axios
+							.post("/task/getUserDateTask",params)
+							.then(res=>{
+								var response=res.data;
+								parseGetUserTask(response);
+							})
+					},
+		            methods: {
+						getDa(e,day){
+							this.ind = day;
+							var day = e.target.innerHTML;
+							if(day<10){
+								day='0'+day;
+							}
+							var month = this.currentMonth;
+							if(month<10){
+								month='0'+month;
+							}
+							var year = this.currentYear;
+							var date = year+"-"+month+"-"+day;
+							var params = new URLSearchParams();
+							var token = localStorage.getItem("token");
+							params.append("token",token);
+							params.append("date",date);
+							axios
+								.post("/task/getUserDateTask",params)
+								.then(res=>{
+									var response=res.data;
+									parseGetUserTask(response);
+								})
+						},
+		                initData: function (cur) {
+		                    let that = this;
+		                    let leftcount = 0; //存放剩余数量
+		                    let date;
+		                    if (cur) {
+		                        date = new Date(cur);
+		                    } else {
+		                        let now = new Date();
+		                        let d = new Date(that.formatDate(now.getFullYear(), now.getMonth(), 1));
+		                        d.setDate(35);
+		                        date = new Date(that.formatDate(d.getFullYear(), d.getMonth() + 1, 1));
+		                    }
+		                    that.currentDay = date.getDate();
+		                    that.currentYear = date.getFullYear();
+		                    that.currentMonth = date.getMonth() + 1;
+		                    that.currentWeek = date.getDay(); // 1...6,0
+		                    if (that.currentWeek == 0) {
+		                        that.currentWeek = 7;
+		                    }
+		                    let str = that.formatDate(that.currentYear, that.currentMonth, that.currentDay);
+		                    that.days.length = 0;
+		                    // 今天是周日，放在第一行第7个位置，前面6个
+		                    //初始化本周
+		                    for (let i = that.currentWeek - 1; i >= 0; i--) {
+		                        let d = new Date(str);
+		                        d.setDate(d.getDate() - i);
+		                        let dayobject = {}; //用一个对象包装Date对象  以便为以后预定功能添加属性
+		                        dayobject.day = d;
+		                        that.days.push(dayobject); //将日期放入data 中的days数组 供页面渲染使用
+		                    }
+		                    //其他周
+		                    for (let i = 1; i <= 35 - that.currentWeek; i++) {
+		                        let d = new Date(str);
+		                        d.setDate(d.getDate() + i);
+		                        let dayobject = {};
+		                        dayobject.day = d;
+		                        that.days.push(dayobject);
+		                    }
+		
+		                },
+		                pickPre: function (year, month) {
+		                    let that = this;
+		                    // setDate(0); 上月最后一天
+		                    // setDate(-1); 上月倒数第二天
+		                    // setDate(dx) 参数dx为 上月最后一天的前后dx天
+		                    let d = new Date(that.formatDate(year, month, 1));
+		                    d.setDate(0);
+		                    that.initData(that.formatDate(d.getFullYear(), d.getMonth() + 1, 1));
+		                },
+		                pickNext: function (year, month) {
+		                    let that = this;
+		                    let d = new Date(that.formatDate(year, month, 1));
+		                    d.setDate(35);
+		                    that.initData(that.formatDate(d.getFullYear(), d.getMonth() + 1, 1));
+		                },
+		                pickYear: function (year, month) {
+							
+		                },
+		                // 返回 类似 2016-01-02 格式的字符串
+		                formatDate: function (year, month, day) {
+		                    let y = year;
+		                    let m = month;
+		                    if (m < 10) m = "0" + m;
+		                    let d = day;
+		                    if (d < 10) d = "0" + d;
+		                    return y + "-" + m + "-" + d
+		                },
+		            }
+		        })
+		        let vm = new Vue({
+		            el: '#app',
+					data(){
+						return{
+							tasks:[],
+							taskStyle:""
+						}
+					},
+					mounted() {
+						// 设置任务区大小
+						var calendarHeight = 335;
+						var screenHeight = window.screen.height;
+						var taskAreaHight = screenHeight - calendarHeight - 73 - 63;
+						console.log("calendarHeight:" + calendarHeight + "screenHeight" + screenHeight + "taskAreaHight" +taskAreaHight);
+						this.taskStyle = "height:"+taskAreaHight+"px; overflow-y:auto";
+					},
+					methods:{
+						changeStatus(status,taskID){
+							var params = new URLSearchParams();
+							var token = localStorage.getItem("token");
+							params.append("token",token);
+							params.append("status",status);
+							params.append("taskID",taskID);
+							var trans = {
+								"planning":"计划中",
+								"todo":"即将开始",
+								"doing":"执行中",
+								"finish":"已完成",
+								"cancel":"已取消"
+							}
+							axios
+								.post("/task/setTaskStatus",params)
+								.then(res=>{
+									var response=res.data;
+									if(response=="STATUS_SET_FAILED"){
+										alert('编辑任务失败');
+									}
+									else{
+										$.each(this.tasks,function(index,item){
+											if(item.taskID==taskID){
+												item.status=trans[status];
+											}
+										})
+									}
+								})
+						},
+						reachRedact(taskID){
+							localStorage.setItem("taskID",taskID);
+							window.location.href="edit_task.html";
+						},
+						deleteTask(taskID){
+							var params = new URLSearchParams();
+							var token = localStorage.getItem("token");
+							params.append("token",token);
+							params.append("taskID",taskID);
+							axios
+								.post("/task/deleteTask",params)
+								.then(res=>{
+									var response=res.data;
+									if(response=="TASK_DELETE_FAILED"){
+										alert('删除任务失败');
+									}
+									else{
+										window.location.href="task.html";
+									}
+								})
+						},
+					}
+		        })
+			
+
+
+	</script>
+	<style>
+		* {
+		    margin: 0;
+		    padding: 0;
+		}
+		
+		
+		/*日历*/
+		
+		#calendar {
+		    width: 98%;
+		    /* border: 2px solid #A4A7B0; */
+		    height: 335px;
+		    margin-left: 0.5%;
+			font-weight: 400;
+		}
+		
+		.month {
+		    width: 92%;
+		    height: 48px;
+		    border: 2px solid #FFFFFF;
+		    margin-left: 3%;
+		    margin-top: 20px;
+		}
+		
+		.month ul {
+		    margin: 0;
+		    padding: 0;
+		    display: flex;
+		    margin-top: 11px;
+		    justify-content: space-between;
+		}
+		
+		.year-month {
+		    flex-direction: column;
+		    align-items: center;
+		    justify-content: space-around;
+		}
+		
+		.choose-year {
+		    padding: 0 20px;
+		    font-size: 16px;
+			font-weight: 600;
+		}
+		
+		.choose-month {
+		    text-align: center;
+		    font-size: 16px;
+			font-size: 600;
+		}
+		
+		.arrow {
+		    width: 3%;
+		    height: 25px;
+		}
+		
+		.arrow1 {
+		    background: url(left.png) no-repeat 0 0 /100% 100%;
+		    margin-left: 44px;
+		}
+		
+		.arrow2 {
+		    background: url(right.png) no-repeat 0 0 /100% 100%;
+		    margin-right: 44px;
+		}
+		
+		.month ul li {
+		    color: #999;
+		    font-size: 20px;
+		    text-transform: uppercase;
+		    letter-spacing: 3px;
+		    list-style: none;
+		}
+		
+		.weekdays li {
+		    display: inline-block;
+		    text-align: center;
+		    color: #000;
+		    font-size: 14px;
+		    font-weight: 100;
+		    width: 12.7%;
+		}
+		
+		.days {
+		    padding: 0;
+		    margin: 0;
+		    display: flex;
+		    flex-wrap: wrap;
+		    justify-content: space-around;
+		}
+		
+		.days li {
+		    list-style-type: none;
+		    display: inline-block;
+		    width: 14.2%;
+		    text-align: center;
+		    padding-bottom: 3px;
+		    padding-top: 7px;
+		    font-size: 12.78px;
+		    color: #000;
+		}
+		
+		.days li span span {
+		    height: 29.5px;
+		    width: 27px;
+		    line-height: 29.5px;
+		    display: inline-block;
+		}
+		
+		.days li .class-30 {
+		    background: url(bg_30.png) no-repeat 0 0 /100% 100%;
+		}
+		
+		.days li .class-60 {
+		    background: url(bg_60.png) no-repeat 0 0 /100% 100%;
+		}
+		
+		.days li .class-3060 {
+		    background: url(bg_3060.png) no-repeat 0 0 /100% 100%;
+		}
+		
+		.days li .other-month {
+		    padding: 5px;
+		    color: #84a8ae;
+		}
+		.active1{
+			border: transparent solid 2px;
+			border-radius: 10px;
+		}
+
+	</style>
+</html>

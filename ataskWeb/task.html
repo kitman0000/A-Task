@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script src="js/vue.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+        <link rel="stylesheet" href="css/MyCss.css" type="text/css" />
+		<link id="cssLink" rel="stylesheet" href="css/theme_pink.css" type="text/css"/>
+        <script src="js/jquery-3.4.1.js"></script>
+        <script src="js/bootstrap.js"></script>
+		<script src="js/axios.min.js"></script>
+		<script src="js/global.js"></script>
+        <title>任务</title>
+        <script>
+            $(document).ready(function() {
+                $('.dropdown-toggle').dropdown();
+            })
+        </script>
+    </head>
+    <body style="">
+        <div id="app" class="container">
+            <div class="row clearfix">
+                <div class="col-md-12 column" style="min-height: 700px;width: 100%;margin-top: 20px;margin-bottom: 200px;">
+                    <!--内容栏-->
+					状态：
+					<div class="btn-group">
+						<button class="btn btn-default btn-sm " data-toggle="dropdown" style="min-width: 70px;">{{sta}}</button>
+						<button data-toggle="dropdown" class="btn btn-default btn-sm dropdown-toggle ">
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu ">
+							<li @click="chooseStatus(null)" style="margin-left: 5px;">
+								所有
+							</li>
+							<li @click="chooseStatus('planning')" style="margin-left: 5px;">
+								计划中
+							</li>
+							<li @click="chooseStatus('todo')" style="margin-left: 5px;">
+								即将开始
+							</li>
+							<li @click="chooseStatus('doing')" style="margin-left: 5px;">
+								执行中
+							</li>
+							<li @click="chooseStatus('finish')" style="margin-left: 5px;">
+								已完成
+							</li>
+							<li @click="chooseStatus('cancel')" style="margin-left: 5px;">
+								已取消
+							</li>
+						</ul>
+					</div>
+                    <div style="margin-top: 10px;box-shadow: 0px 5px 2px #888888;padding: 10px 10px 0.5px 10px;" class="btn_word" v-for="task in tasks">
+                        <h3 class="text-left" style="display: inline;">
+                            {{task.title}}
+                        </h3>
+                        <span @click="deleteTask(task.taskID)" class="glyphicon glyphicon-trash glyphicon-trash_btn word"></span>
+                        <span @click="reachRedact(task.taskID)"  class="glyphicon glyphicon-pencil glyphicon-pencil_btn word"></span>
+                        <br />
+                        <p class="lead text-success btn_word">
+                            {{task.content}}
+                            <div class="btn-group" style="border: 1px solid rgb(106,106,106);border-radius: 3px;">
+                            	<button data-toggle="dropdown" class="btn btn-default btn-sm states btn_word" style="background: #fff; min-width: 70px;">{{task.status}}</button>
+								<button data-toggle="dropdown" class="btn btn-default btn-sm dropdown-toggle states btn_word" style="background: #fff;">
+                            		<span class="caret"></span>
+								</button>
+                            	<ul class="dropdown-menu states">
+                            		<li @click="changeStatus('planning',task.taskID)" style="margin-left: 5px;">
+                            			计划中
+                            		</li>
+									<li @click="changeStatus('todo',task.taskID)" style="margin-left: 5px;">
+										即将开始
+									</li>
+									<li @click="changeStatus('doing',task.taskID)" style="margin-left: 5px;">
+										执行中
+									</li>
+									<li @click="changeStatus('finish',task.taskID)" style="margin-left: 5px;">
+										已完成
+									</li>
+									<li @click="changeStatus('cancel',task.taskID)" style="margin-left: 5px;">
+										已取消
+									</li>
+                            	</ul>
+                            </div>
+                            <span class="taskpage_date">{{task.date}}</span>
+						</p>
+                    </div>
+                    <!--内容栏结束-->
+                    <!--添加任务按钮-->
+					<div style="z-index: 9999; position: fixed; right: 25px; bottom: 90px;">
+						<table width="100%" style="position: absolute;">
+							<span @click="reachAdd" class=" glyphicon glyphicon-plus-sign " style="font-size: 50px;"></span>
+						</table>
+					</div>
+                </div>
+            </div>
+        </div>
+    </body>
+    
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data(){
+				return{
+					tasks:[],
+					sta:"所有"
+				}
+			},
+            methods:{
+				changeStatus(status,taskID){
+					var params = new URLSearchParams();
+					var token = localStorage.getItem("token");
+					params.append("token",token);
+					params.append("status",status);
+					params.append("taskID",taskID);
+					var trans = {
+						"planning":"计划中",
+						"todo":"即将开始",
+						"doing":"执行中",
+						"finish":"已完成",
+						"cancel":"已取消"
+					}
+					axios
+						.post("/task/setTaskStatus",params)
+						.then(res=>{
+							var response=res.data;
+							if(response=="STATUS_SET_FAILED"){
+								alert('编辑任务失败');
+							}
+							else{
+								$.each(this.tasks,function(index,item){
+									if(item.taskID==taskID){
+										item.status=trans[status];
+									}
+								})
+							}
+						})
+				},
+				reachAdd(){
+					window.location.href="add_task.html";
+				},
+				reachRedact(taskID){
+					localStorage.setItem("taskID",taskID);
+					window.location.href="edit_task.html";
+				},
+				deleteTask(taskID){
+					var params = new URLSearchParams();
+					var token = localStorage.getItem("token");
+					params.append("token",token);
+					params.append("taskID",taskID);
+					axios
+						.post("/task/deleteTask",params)
+						.then(res=>{
+							var response=res.data;
+							if(response=="TASK_DELETE_FAILED"){
+								alert('删除任务失败');
+							}
+							else{
+								window.location.href="task.html";
+							}
+						})
+				},
+				chooseStatus(status){
+					var trans = {
+						null:"所有",
+						"planning":"计划中",
+						"todo":"即将开始",
+						"doing":"执行中",
+						"finish":"已完成",
+						"cancel":"已取消"
+					}
+					this.sta=trans[status];
+					var params = new URLSearchParams();
+					var token = localStorage.getItem("token");
+					params.append("token",token);
+					params.append("status",status);
+					axios
+						.post("/task/getUserTask",params)
+						.then(res=>{
+							var response=res.data;
+							parseGetUserTask(response);
+						})
+				}
+			},
+			created(){
+				checkToken();
+				getTheme();
+			},
+			mounted() {
+				var params = new URLSearchParams();
+				var token = localStorage.getItem("token");
+				params.append("token",token);
+				params.append("status","null");
+				axios
+					.post("/task/getUserTask",params)
+					.then(res=>{
+						var response=res.data;
+						parseGetUserTask(response);
+					})
+			}
+		})
+        
+		function parseGetUserTask(response){
+			var tasksObj = eval(response);
+			
+			var trans = {
+				"planning":"计划中",
+				"todo":"即将开始",
+				"doing":"执行中",
+				"finish":"已完成",
+				"cancel":"已取消"
+			}
+			
+			$.each(tasksObj,function(index,item){
+				item.status = trans[item.status];
+			});
+			app.tasks = tasksObj;
+		}
+    </script>
+</html>

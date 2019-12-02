@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atask.ataskServer.userModule.mapper.IUserMapper">
+
+    <!-- 添加用户 -->
+    <insert id="addUser">
+        INSERT INTO tb_user (phoneNumber,pwd) VALUES (#{phoneNumber},#{pwd})
+    </insert>
+
+    <!-- 修改用户密码 -->
+    <update id="updateUserPwd">
+        UPDATE tb_user SET pwd = #{newPwd}
+        <where>
+            id = #{userID}
+        </where>
+    </update>
+
+    <!-- 手机号校验密码 -->
+    <select id="checkUserPwdWithPhone" resultType="java.lang.Integer">
+        SELECT id FROM tb_user WHERE phoneNumber = #{phoneNumber} and pwd = #{pwd}
+    </select>
+
+    <!-- 用户id校验密码 -->
+    <select id="checkUserPwdWithID" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM tb_user WHERE id = #{userID} and pwd = #{pwd}
+    </select>
+
+    <!-- 检验手机号是否存在 -->
+    <select id="checkPhoneNumberExist" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM tb_user WHERE phoneNumber = #{phoneNumber}
+    </select>
+
+    <!-- 获取userID -->
+    <select id="getUserID" resultType="java.lang.Integer">
+        SELECT id FROM tb_user WHERE phoneNumber = #{phoneNumber}
+    </select>
+
+    <!-- 获取用户电话号码 -->
+    <select id="getUserPhoneNumber" resultType="java.lang.String">
+        SELECT phoneNumber FROM tb_user WHERE id = #{userID}
+    </select>
+
+
+</mapper>

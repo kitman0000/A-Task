@@ -1,0 +1,70 @@
+.formLabel {
+	font-size: 14px;
+}
+
+.formInput {
+	height: 25px;
+}
+
+
+.a_PresentHtml {
+	text-decoration: underline;
+}
+.header_log_reg {
+	text-align: center;
+	margin-top: 10px;
+}
+.img_css {
+	width: 100%;
+	height: auto;
+	margin-top: 8px;
+}
+.btn_send {
+	float: left;
+	height: 34px;
+	width: 25%;
+	padding: 0px;
+	background-color: #C1E2B3;
+	font-size: 12px;
+}
+.MyNav {
+	width: 33%;
+	text-align: center;
+	font-size: 18px;
+}
+.taskpage_date {
+	float: right;
+	margin-top: 6px;
+	margin-right: 9px;
+}
+.glyphicon-trash_btn {
+	float: right;
+	display: inline;
+	margin-top: 5px;
+}
+.glyphicon-pencil_btn {
+	float: right;
+	margin-top: 5px;
+	margin-right: 10px;
+}
+.states {
+	background-color:#fff;
+	border: 0px;
+}
+.ChooseColor_area {
+	margin-top: 50px;
+	text-align: center;
+}
+.color_area {
+	width:100px;
+	height:100px;
+	border-radius:50px;
+}
+.selected_theme {
+	width: 80px;
+	height: 80px;
+	margin-left: 10px;
+	padding-top: 10px;
+	border:2px solid white;
+	border-radius: 40px;
+}
