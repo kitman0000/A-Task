@@ -11,7 +11,7 @@ A-Task 是一款面向个人的行程任务管理网站
 	后端：Spring boot + Mybatis + Redis + MySql
 	
 ## 项目依赖
-	请参加Maven的pom.xml
+	请参照Maven的pom.xml
 	
 ## 参数配置
 	MySql数据库连接字符串,Redis密码
